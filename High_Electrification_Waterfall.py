@@ -4,7 +4,7 @@
 # In[15]:
 
 
-from Pandas_Scratch import waterfall_chart
+import waterfall_chart
 
 #import ethree_col
 
