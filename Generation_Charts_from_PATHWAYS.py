@@ -13,6 +13,9 @@ varname = 'Annual_Energy_Balanc'
 gen_list = ['CHP', 'Coal', 'Imported Coal', 'Gas', 'Imported Gas', 'Imported BPA', 'Nuclear', 'Imported Nuclear', 'Large Hydro',
             'Other Renewables', 'Wind', 'Distributed PV', 'Utility PV', 'Curtailment']
 
+yrange = [0, 800]
+ylabel = 'Generation (TWh)'
+
 for case in cases:
 
     invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'))
@@ -28,7 +31,8 @@ for case in cases:
 
     plt.figure()
     plt.stackplot(gen.index, gen.values.transpose())
-    plt.ylim([0, 800])
+    plt.ylim(yrange)
+    plt.ylabel(ylabel)
     plt.legend(gen.columns, loc='upper left')
     plt.title(case)
 
