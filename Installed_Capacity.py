@@ -12,7 +12,7 @@ outputs_path = output_directory
 
 varname = 'Installed_Capacity_1'
 
-gen_list = ['CHP', 'Coal', 'Natural Gas', 'Imports', 'Nuclear', 'Hydro',
+gen_list = ['CHP', 'Natural Gas', 'Imports', 'Nuclear', 'Hydro',
             'Biomass', 'Geothermal', 'Wind', 'Rooftop PV', 'Solar', 'Storage']
 
 scaling = 0.001
@@ -20,13 +20,13 @@ yrange =  [0, 400] #None #[0, 800]
 ylabel = 'Installed Capacity (GW)'
 
 gen_color_dict = {
-    'CHP': 'grey',
-    'Coal': 'darkgrey',
-    'Natural Gas': 'silver',
+    'CHP': 'black', # 'darkgrey',
+    #'Coal': 'darkgrey',
+    'Natural Gas': 'darkgrey', #'silver',
     'Imports': '#d9d9d9',
-    'Nuclear': '#bebada',
+    'Nuclear': 'pink', #'#bebada',
     'Hydro': '#80b1d3',
-    'Biomass': 'blue',
+    'Biomass': 'green', # 'blue',
     'Geothermal': 'red',
     'Wind': '#8dd3c7',
     'Rooftop PV': '#fdb462',
