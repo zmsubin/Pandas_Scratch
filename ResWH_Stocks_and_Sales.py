@@ -12,12 +12,14 @@ try:
 except OSError:
     pass
 
-fmt = 'png'
+fmt = 'jpg'
 #cases = ['FONG High Electrification', 'FONG Medium Building Electrification', 'FONG No Bldg Elect with Industry & Truck Measures']
 
 outputs_path = output_directory
 
 varnames = ['RES_WH_Collapse', 'RES_WH_Sales_Share']
+geoselect = [None, 'SCE']
+geo_index = 'Geography_Energy'
 
 color_dict = {
     'Reference LPG WH': 'lightgrey',
@@ -49,6 +51,8 @@ for i in range(len(varnames)):
     varname = varnames[i]
     invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
     invar[invar[index_name] == exclude] = 0.
+    if geoselect[i] is not None:
+        invar = invar[invar[geo_index] == geoselect[i]]
     scaling_in = scaling[i]
     ylabel_in = ylabel[i]
     time_index_in = time_index[i]
