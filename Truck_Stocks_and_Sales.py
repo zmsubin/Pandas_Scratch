@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import os
 import plot_util
 
-input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\Mitigation Scenario Truck Stocks 2018-07-02"
+input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
 output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python"
 fmt = 'png'
-cases = ['FONG High Electrification', 'FONG No Building Electrification', 'FONG No Building Electrification B']
+cases = ['FONG High Electrification', 'FONG Medium Building Electrification', 'FONG No Bldg Elect with Industry & Truck Measures']
 
 outputs_path = output_directory
 
@@ -38,7 +38,7 @@ index_name = 'In_Use_Techs_TRA_HD'
 
 time_index = ['Year', 'Vintage']
 
-for i in [1]: #range(len(varnames)):
+for i in range(len(varnames)):
     varname = varnames[i]
     invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
     scaling_in = scaling[i]
