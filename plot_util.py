@@ -19,18 +19,42 @@ def nanmap(val, fillval=0):
         return val
 
 
+def othermap(val, keys, other_key='Other'):
+    if val in keys:
+        return val
+    else:
+        return other_key
+
+
 def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', keys=None, labels_dict=None,
                  color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                  time_index='Output_Year', value_name='Value', aggfunc=np.sum, map=None, fontsize=12,
-                 xlim=(2015, 2050), xlabel=''):
+                 xlim=(2015, 2050), xlabel='', select=None, other_key=None): #select is a dictionary of lists
     print('Stacked area chart for variable: ' + varname + ', case: ' + case)
 
     data = data.copy()
 
     var = data[data[case_index] == case]
-    var[value_name].map(nanmap)
 
-    pivot = pd.crosstab(var[time_index], var[index_name], values=var[value_name], aggfunc=aggfunc)
+    if other_key is not None:
+        var[index_name] = var[index_name].map(lambda x: othermap(x, keys, other_key))
+
+    var[value_name] = var[value_name].map(nanmap)
+
+    print(var.head())
+
+    if select is None:
+        pivot = pd.crosstab(var[time_index], var[index_name], values=var[value_name], aggfunc=aggfunc)
+    else:
+        index = list(select.keys())
+        index.append(time_index)
+        pivot = pd.pivot_table(var, index=index, columns=index_name, values=value_name, aggfunc=aggfunc, fill_value=0.)
+        idx = pd.IndexSlice
+        for column in select.keys():
+            pivot = pivot.loc[idx[select[column]], idx[:]]
+        pivot = pivot.groupby(time_index).sum()
+
+    print(pivot)
     print(pivot.columns.tolist())
     if keys is None:
         active_list = pivot.columns.tolist()
@@ -50,7 +74,7 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
     ## can easily do subplots this way
 
     if color_dict is None:
-        color = None
+        color = ETHREE_COL
     else:
         color = [color_dict[x] for x in pivot.columns.values]
 
