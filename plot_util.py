@@ -126,6 +126,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
         active_list_y = ykeys.copy()
         for key in ykeys:
             if key not in pivot.columns.tolist():
+                print('Key not found: ' + key + ': removing.')
                 active_list_y.remove(key)
 
     pivot = pivot[active_list_y]
@@ -136,6 +137,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
         active_list = xkeys.copy()
         for key in xkeys:
             if key not in pivot.index.tolist():
+                print('Key not found: ' + key + ': removing.')
                 active_list.remove(key)
 
     pivot = pivot.loc[active_list]
