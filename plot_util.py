@@ -109,13 +109,16 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
 def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', xkeys=None, ykeys=None, labels_dict=None,
                 color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                 value_name='Value', aggfunc=np.sum, map=None, fontsize=12, time_index='Output_Year',
-                xlabel='', title='', xlabels=None):
+                xlabel='', title='', xlabels=None, base_case=None, other_key=None):
     print('Stacked bar chart for variable: ' + varname + ', year: ' + str(select))
 
     data = data.copy()
 
     var = data[data[time_index] == select]
     var[value_name].map(nanmap)
+
+    if other_key is not None:
+        var[index_name] = var[index_name].map(lambda x: othermap(x, ykeys, other_key))
 
     pivot = pd.crosstab(var[case_index], var[index_name], values=var[value_name], aggfunc=aggfunc)
     print(pivot.columns.tolist())
@@ -140,11 +143,14 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
                 print('Key not found: ' + key + ': removing.')
                 active_list.remove(key)
 
-    pivot = pivot.loc[active_list]
+    target = pivot.loc[active_list]
+    if base_case is not None:
+        for case in active_list:
+            target.loc[case] = target.loc[case].subtract(pivot.loc[base_case], fill_value=0.)
 
     if map is None:
         map = lambda x: abs(x) * scaling
-    pivot = pivot.applymap(map)
+    target = target.applymap(map)
 
     fig, ax = plt.subplots()  ## this is the most flexible approach to access the mpl api
     ## can easily do subplots this way
@@ -152,9 +158,9 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     if color_dict is None:
         color = ETHREE_COL
     else:
-        color = [color_dict[x] for x in pivot.columns.values]
+        color = [color_dict[x] for x in target.columns.values]
 
-    pivot.plot.bar(ax=ax, fontsize=fontsize, color=color, stacked=True)  ## list comprehension using color dict above
+    target.plot.bar(ax=ax, fontsize=fontsize, color=color, stacked=True)  ## list comprehension using color dict above
 
     if yrange is not None:
         ax.set_ylim(yrange)
