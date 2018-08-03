@@ -12,7 +12,7 @@ try:
 except OSError:
     pass
 
-fmt = 'jpg'
+fmt = 'png'
 # cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
 #          'FONG No Bldg Elect with Industry & Truck Measures']
 # xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',

@@ -14,8 +14,8 @@ except OSError:
     pass
 
 fmt = 'png'
-cases = ['FONG High Electrification', 'FONG Medium Buildings Branching High', 'FONG Medium Building Electrification', 'FONG Medium Buildings Branching Low', 'FONG No Building Electrification with SNG']
-casenames = ['High Electrification', 'Hybrid-High', 'Hybrid', 'Hybrid-Low', 'No Building Electrification']
+cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG']
+casenames = ['High Electrification', 'No Building Electrification']
 
 varname = 'Final_Energy1'
 
@@ -23,9 +23,9 @@ scaling = [100, 1000 / 1.055]  # EJ to TBTU
 ylabel = ['% of Building Energy', 'TBTU']
 index_name = 'Final_Energy'
 select_index = 'End_Use_Sectors'
-select = ['Residential', 'Commercial']
-ylim = [[0, 100], [0, 800]]
-title = ['Percent of Building Final Energy that is Electricity', 'Building Gas Demand']
+#select = ['Residential', 'Commercial']
+ylim = [[0, 100], [0, 1800]]
+title = ['Percent of Economywide Final Energy that is Electricity', 'Economywide Non-Electric Gas Demand']
 reverse = [False, True]
 
 time_index = 'Output_Year'
@@ -38,7 +38,7 @@ xlabel = 'Year'
 pivot = invar.pivot_table(index=[select_index, index_name, time_index], columns=case_index, values=value_name, aggfunc=np.sum)
 var = pivot[cases]
 
-var = var.loc[select].groupby([index_name, time_index]).sum()
+var = var.groupby([index_name, time_index]).sum() #var.loc[select].groupby([index_name, time_index]).sum()
 
 electric_fraction = var.loc['Electricity'] / var.groupby(time_index).sum()
 gas_demand = var.loc['Pipeline Gas']

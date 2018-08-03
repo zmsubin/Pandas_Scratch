@@ -12,8 +12,7 @@ try:
 except OSError:
     pass
 
-fmt = 'jpg'
-#cases = ['FONG High Electrification', 'FONG Medium Building Electrification', 'FONG No Bldg Elect with Industry & Truck Measures']
+fmt = 'png'
 
 outputs_path = output_directory
 
@@ -22,16 +21,17 @@ geoselect = [None, 'SCE']
 geo_index = 'Geography_Energy'
 
 color_dict = {
-    'Reference LPG WH': 'lightgrey',
+    'Reference LPG WH': 'dimgrey',
     'Reference Gas WH': 'grey',
-    'High Efficiency Gas WH': 'black',
-    'High Efficiency LPG WH': 'brown',
+    'High Efficiency Gas WH': 'tan',
+    'High Efficiency LPG WH': 'lightgrey',
     #'High Efficiency Distillate WH': 'brown',
     'Reference Electric WH': 'lightblue',
-    'Heat Pump Electric WH': 'blue',
-    'Gas Heat Pump WH': 'yellow'
+    'Heat Pump Electric WH': 'skyblue',
+    'Gas Heat Pump WH': 'tomato'
 }
 exclude = 'High Efficiency Distillate WH'
+fontsize = 12
 
 keys = list(color_dict.keys())
 
@@ -61,4 +61,4 @@ for i in range(len(varnames)):
         plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt,
                                keys=keys,
                                color_dict=color_dict, scaling=scaling_in, yrange=yrange_in, ylabel=ylabel_in,
-                               time_index=time_index_in)
+                               time_index=time_index_in, fontsize=fontsize)
