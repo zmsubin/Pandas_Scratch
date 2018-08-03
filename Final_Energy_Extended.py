@@ -13,13 +13,13 @@ except OSError:
     pass
 
 fmt = 'png'
-cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
-         'FONG No Bldg Elect with Industry & Truck Measures']
-xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
-           'No Bldg. Elect.\nwith Industry\n& Truck Measures', '2015']
-# cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High',
-#          'FONG Medium Buildings Branching Low']
-# xlabels = ['Hybrid', 'Hybrid-High', 'Hybrid-Low']
+# cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
+#          'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
+# xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
+#            'No Bldg. Elect.\nwith Industry\n& Truck Measures', 'Current\nPolicy']
+cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High',
+         'FONG Medium Buildings Branching Low']
+xlabels = ['Hybrid', 'Hybrid-High', 'Hybrid-Low']
 
 other_key = 'Other'
 
@@ -52,10 +52,10 @@ labels_dict = {'Electricity': 'Electricity',
                'Power to Gas': 'Synthetic Natural Gas'
                }
 
-color_dict = {'Electricity': 'navy',
+color_dict = {'Electricity': 'skyblue',
               'Hydrogen': 'gold',
               'Conventional Gasoline & Ethanol': 'maroon',
-              'Renewable Gasoline': 'red',
+              'Renewable Gasoline': 'salmon',
               'Conventional Diesel': 'saddlebrown',
               'Renewable Diesel': 'sandybrown',
               'Conventional Jet Fuel': 'purple',
@@ -75,7 +75,7 @@ color_dict = {'Electricity': 'navy',
 #     'MDV Hydrogen FCV': 'darkblue'
 # }
 
-fontsize = 10 #12  # 10
+fontsize = 12  # 10
 
 outputs_path = output_directory
 
@@ -87,8 +87,7 @@ index_name = 'Final_Energy_Categor'
 year = 2050
 title = 'Final Energy Consumption in ' + str(year)
 base_case = None  # 'Current Policy Reference'
-base_year = 2015
-filename = 'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Hybrid_Cases'
+filename = 'Final_Energy_Consumption_Hybrid_Cases' # 'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Hybrid_Cases'
 
 invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
 plot_util.stacked_bar(invar, year, varname, output_directory, index_name, fmt=fmt, xkeys=cases, ykeys=keys,

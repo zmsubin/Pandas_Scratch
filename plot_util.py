@@ -133,14 +133,11 @@ def reshape(df, xkeys, ykeys):
 def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', xkeys=None, ykeys=None, labels_dict=None,
                 color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                 value_name='Value', aggfunc=np.sum, map=None, fontsize=12, time_index='Output_Year',
-                xlabel='', title='', xlabels=None, base_case=None, other_key=None, filename=None,
-                base_year=None):
+                xlabel='', title='', xlabels=None, base_case=None, other_key=None, filename=None):
+
     print('Stacked bar chart for variable: ' + varname + ', year: ' + str(select))
 
     data = data.copy()
-
-    if base_case is not None and base_year is not None:
-        raise RuntimeError('Cannot select both base case and base year.')
 
     #var = data[data[time_index] == select]
     var = data
@@ -153,10 +150,10 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
         var[index_name] = var[index_name].map(lambda x: othermap(x, ykeys, other_key))
 
     pivot = var.pivot_table(index=[time_index, case_index], columns=index_name, values=value_name, aggfunc=aggfunc)
-    cases = list(pivot.levels[1])
+    columns = pivot.columns.tolist()
+    print(columns)
+    cases = list(pivot.index.levels[1])
     print(cases)
-    if base_year is not None:
-        pivot_base = pivot.loc[base_year, cases[0]] # use first case
     pivot = pivot.loc[select]
 
     target, active_list = reshape(pivot, xkeys, ykeys)
@@ -164,9 +161,6 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     if base_case is not None:
         for case in active_list:
             target.loc[case] = target.loc[case].subtract(pivot.loc[base_case], fill_value=0.)
-    elif base_year is not None:
-        target_base = reshape(pivot_base, None, ykeys)
-        target = target_base
 
     if map is None:
         map = lambda x: abs(x) * scaling
@@ -187,10 +181,14 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
 
     ax.set_ylabel(ylabel, fontsize=fontsize)
 
-    ax.set_xlabel(xlabel)
+    ax.set_xlabel(xlabel, fontsize=fontsize)
 
     if xlabels is not None:
-        ax.set_xticklabels(xlabels, rotation=0)
+        if max([len(x) for x in xlabels]) > 15:
+            xlfontsize = fontsize - 3
+        else:
+            xlfontsize = fontsize
+        ax.set_xticklabels(xlabels, rotation=0, fontsize=xlfontsize)
 
     handles, labels = ax.get_legend_handles_labels()  ## get legend labels and boxes as variables
     # if labels_dict is not None:
