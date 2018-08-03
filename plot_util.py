@@ -106,47 +106,67 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
     # plt.close()
 
 
+def reshape(df, xkeys, ykeys):
+    target = df
+    if ykeys is not None:
+        active_list_y = ykeys.copy()
+        for key in ykeys:
+            if key not in df.columns.tolist():
+                print('Key not found: ' + key + ': removing.')
+                active_list_y.remove(key)
+
+        target = target[active_list_y]
+
+    if xkeys is None:
+       active_list = df.index.tolist()
+    else:
+        active_list = xkeys.copy()
+        for key in xkeys:
+            if key not in df.index.tolist():
+                print('Key not found: ' + key + ': removing.')
+                active_list.remove(key)
+        target = target.loc[active_list]
+
+    return target, active_list
+
+
 def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', xkeys=None, ykeys=None, labels_dict=None,
                 color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                 value_name='Value', aggfunc=np.sum, map=None, fontsize=12, time_index='Output_Year',
-                xlabel='', title='', xlabels=None, base_case=None, other_key=None):
+                xlabel='', title='', xlabels=None, base_case=None, other_key=None, filename=None,
+                base_year=None):
     print('Stacked bar chart for variable: ' + varname + ', year: ' + str(select))
 
     data = data.copy()
 
-    var = data[data[time_index] == select]
+    if base_case is not None and base_year is not None:
+        raise RuntimeError('Cannot select both base case and base year.')
+
+    #var = data[data[time_index] == select]
+    var = data
     var[value_name].map(nanmap)
+
+    if labels_dict is not None:
+        var[index_name] = var[index_name].map(labels_dict)
 
     if other_key is not None:
         var[index_name] = var[index_name].map(lambda x: othermap(x, ykeys, other_key))
 
-    pivot = pd.crosstab(var[case_index], var[index_name], values=var[value_name], aggfunc=aggfunc)
-    print(pivot.columns.tolist())
+    pivot = var.pivot_table(index=[time_index, case_index], columns=index_name, values=value_name, aggfunc=aggfunc)
+    cases = list(pivot.levels[1])
+    print(cases)
+    if base_year is not None:
+        pivot_base = pivot.loc[base_year, cases[0]] # use first case
+    pivot = pivot.loc[select]
 
-    if ykeys is None:
-        active_list_y = pivot.columns.tolist()
-    else:
-        active_list_y = ykeys.copy()
-        for key in ykeys:
-            if key not in pivot.columns.tolist():
-                print('Key not found: ' + key + ': removing.')
-                active_list_y.remove(key)
+    target, active_list = reshape(pivot, xkeys, ykeys)
 
-    pivot = pivot[active_list_y]
-
-    if xkeys is None:
-        active_list = pivot.index.tolist()
-    else:
-        active_list = xkeys.copy()
-        for key in xkeys:
-            if key not in pivot.index.tolist():
-                print('Key not found: ' + key + ': removing.')
-                active_list.remove(key)
-
-    target = pivot.loc[active_list]
     if base_case is not None:
         for case in active_list:
             target.loc[case] = target.loc[case].subtract(pivot.loc[base_case], fill_value=0.)
+    elif base_year is not None:
+        target_base = reshape(pivot_base, None, ykeys)
+        target = target_base
 
     if map is None:
         map = lambda x: abs(x) * scaling
@@ -173,13 +193,18 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
         ax.set_xticklabels(xlabels, rotation=0)
 
     handles, labels = ax.get_legend_handles_labels()  ## get legend labels and boxes as variables
-    if labels_dict is not None:
-        labels = [labels_dict[x] for x in active_list_y]
+    # if labels_dict is not None:
+    #     labels = [labels_dict[x] for x in active_list_y]
     lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1])  ## reverse order
     ## bbox moves the legend in more precise fashion
 
     ax.set_title(title, fontsize=fontsize + 2)
 
-    plt.savefig(os.path.join(output_directory, varname + '_' + str(select) + '.' + fmt),
-                dpi=600, transparent=True, bbox_extra_artists=(lgd,),
+    if filename is None:
+        filename = title + '_' + str(select) + '.' + fmt
+    else:
+        filename += '.' + fmt
+
+    plt.savefig(os.path.join(output_directory, filename),
+                dpi=600, transparent=False, bbox_extra_artists=(lgd,),
                 bbox_inches='tight', format=fmt)
