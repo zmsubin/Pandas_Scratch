@@ -12,35 +12,42 @@ try:
 except OSError:
     pass
 
-fmt = 'jpg'
+fmt = 'png'
 cases = ['FONG High Electrification', 'FONG No Bldg Elect with Gas HPs', 'FONG No Building Electrification with SNG']
 
 varnames = ['Final_Ene_Dem_Ext_O']
 
 other_key = 'Other'
-keys = ['Electricity', 'Biogas', 'Natural Gas', 'Hydrogen', 'Power to Gas', other_key]
+keys = ['Electricity', 'Biomethane', 'Natural Gas', 'Hydrogen', 'Power to Gas', other_key]
 
 labels_dict = {'Electricity': 'Electricity',
-               'Biogas': 'Biomethane',
+               'Hydrogen': 'Hydrogen',
+               'Conventional Gasoline / Conventional Ethanol': 'Conventional Gasoline & Ethanol',
+               'Renewable Gasoline': 'Renewable Gasoline',
+               'Renewable Ethanol': 'Renewable Gasoline',
+               'Conventional Diesel': 'Conventional Diesel',
+               'Conventional Jet Fuel': 'Conventional Jet Fuel',
+               'Renewable Diesel': 'Renewable Diesel',
+               'Biodiesel': 'Renewable Diesel',
+               'Renewable Jet Fuel': 'Renewable Jet Fuel',
                'Natural Gas': 'Natural Gas',
-               'Hydrogen': 'Pipeline Hydrogen',
-               'Power to Gas': 'SNG',
-               other_key: other_key}
+               'Biogas': 'Biomethane',
+               'Power to Gas': 'Synthetic Natural Gas'
+               }
 
-color_dict = {}
-i = 0
-for key in keys:
-    color_dict[key] = plot_util.ETHREE_COL[i]
-    i += 1
-
-#
-# color_dict = {
-#     'Efficient HDV Diesel': 'grey',
-#     'Hybrid Diesel HDV': 'darkgrey',
-#     'Efficient HDV CNG': 'lightblue',
-#     'HDV Battery Electric': 'blue',
-#     'HDV Hydrogen FCV': 'darkblue'
-# }
+color_dict = {'Electricity': 'skyblue',
+              'Hydrogen': 'gold',
+              'Conventional Gasoline & Ethanol': 'maroon',
+              'Renewable Gasoline': 'salmon',
+              'Conventional Diesel': 'saddlebrown',
+              'Renewable Diesel': 'sandybrown',
+              'Conventional Jet Fuel': 'purple',
+              'Renewable Jet Fuel': 'violet',
+              'Natural Gas': 'darkgreen',
+              'Biomethane': 'limegreen',
+              'Synthetic Natural Gas': 'olive',
+              other_key: 'black'
+              }
 
 scaling = [1000 / 1.055]  # EJ to TBTU
 ylabel = ['TBTU']
@@ -55,11 +62,14 @@ for i in range(len(varnames)):
     scaling_in = scaling[i]
     ylabel_in = ylabel[i]
     time_index_in = time_index[i]
-    #yrange_in = yrange[i]
+    # yrange_in = yrange[i]
+    data = []
     for case in cases:
-        plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt, keys=keys,
-                               other_key=other_key,
-                               labels_dict=labels_dict,
-                               color_dict=color_dict,
-                               scaling=scaling_in, ylabel=ylabel_in,
-                               time_index=time_index_in, select=select)
+        pivot = plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt,
+                                       keys=keys,
+                                       other_key=other_key,
+                                       labels_dict=labels_dict,
+                                       color_dict=color_dict,
+                                       scaling=scaling_in, ylabel=ylabel_in,
+                                       time_index=time_index_in, select=select)
+        data.append(pivot)

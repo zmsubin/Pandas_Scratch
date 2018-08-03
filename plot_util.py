@@ -36,6 +36,9 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
 
     var = data[data[case_index] == case]
 
+    if labels_dict is not None:
+        var[index_name] = var[index_name].map(labels_dict)
+
     if other_key is not None:
         var[index_name] = var[index_name].map(lambda x: othermap(x, keys, other_key))
 
@@ -54,14 +57,13 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
             pivot = pivot.loc[idx[select[column]], idx[:]]
         pivot = pivot.groupby(time_index).sum()
 
-    print(pivot)
     print(pivot.columns.tolist())
     if keys is None:
         active_list = pivot.columns.tolist()
     else:
         active_list = keys.copy()
         for key in keys:
-            if key not in pivot.columns.tolist():
+            if key not in pivot.columns.tolist() or max(abs(pivot[key])) == 0.:
                 active_list.remove(key)
 
     pivot = pivot[active_list]
@@ -92,16 +94,17 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
     ax.set_xlabel(xlabel)
 
     handles, labels = ax.get_legend_handles_labels()  ## get legend labels and boxes as variables
-    if labels_dict is not None:
-        labels = [labels_dict[x] for x in active_list]
-    lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1])  ## reverse order
+
+    lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1], fontsize=fontsize)  ## reverse order
     ## bbox moves the legend in more precise fashion
 
     ax.set_title(case, fontsize=fontsize + 2)
 
     plt.savefig(os.path.join(output_directory, varname + '_' + case + '.' + fmt),
-                dpi=600, transparent=True, bbox_extra_artists=(lgd,),
+                dpi=600, transparent=False, bbox_extra_artists=(lgd,),
                 bbox_inches='tight', format=fmt)
+
+    return pivot
 
     # plt.close()
 
@@ -130,6 +133,14 @@ def reshape(df, xkeys, ykeys):
     return target, active_list
 
 
+def safe_dict(x, dictionary):
+    try:
+        y = dictionary[x]
+    except KeyError:
+        y = x
+    return y
+
+
 def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', xkeys=None, ykeys=None, labels_dict=None,
                 color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                 value_name='Value', aggfunc=np.sum, map=None, fontsize=12, time_index='Output_Year',
@@ -144,7 +155,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     var[value_name].map(nanmap)
 
     if labels_dict is not None:
-        var[index_name] = var[index_name].map(labels_dict)
+        var[index_name] = var[index_name].map(lambda x: safe_dict(x, labels_dict))
 
     if other_key is not None:
         var[index_name] = var[index_name].map(lambda x: othermap(x, ykeys, other_key))
@@ -184,7 +195,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     ax.set_xlabel(xlabel, fontsize=fontsize)
 
     if xlabels is not None:
-        if max([len(x) for x in xlabels]) > 15:
+        if max([len(x) for x in xlabels]) > 15 and fontsize is not None:
             xlfontsize = fontsize - 3
         else:
             xlfontsize = fontsize
@@ -193,7 +204,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     handles, labels = ax.get_legend_handles_labels()  ## get legend labels and boxes as variables
     # if labels_dict is not None:
     #     labels = [labels_dict[x] for x in active_list_y]
-    lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1])  ## reverse order
+    lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1], fontsize=fontsize)  ## reverse order
     ## bbox moves the legend in more precise fashion
 
     ax.set_title(title, fontsize=fontsize + 2)

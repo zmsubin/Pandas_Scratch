@@ -12,18 +12,18 @@ try:
 except OSError:
     pass
 
-fmt = 'jpg'
+fmt = 'png'
 cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
-         'FONG No Bldg Elect with Industry & Truck Measures']
+         'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
 xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
-           'No Bldg. Elect.\nwith Industry\n& Truck Measures']
-ykeys = ['Ag & Other', 'Buildings: Other', 'Industrial', 'Buildings: Water Heating', 'Buildings: Space Heating', 'Buildings: Cooking and Clothes Drying', 'Light-Duty Vehicles', 'Other Transportation', 'Fuel Production']
-fontsize=10
+           'No Bldg. Elect.\nwith Industry\n& Truck Measures', 'Current\nPolicy']
+ykeys = ['Ag & Other', 'Industrial', 'Buildings: Other', 'Building Electrification', 'Light-Duty Vehicles', 'Other Transportation', 'Fuel Production']
 
-# labels_dict = {
-#     'Jet Fuel (Kerosene)': 'Renewable Jet Fuel', 'Gasoline': 'Renewable Gasoline and Ethanol',
-#     'Diesel': 'Renewable Diesel', 'Pipeline Gas': 'Biomethane'
-# }
+labels_dict = {'Buildings: Space Heating': 'Building Electrification',
+               'Buildings: Water Heating': 'Building Electrification',
+               'Buildings: Cooking and Clothes Drying': 'Building Electrification'}
+
+fontsize= 12
 
 outputs_path = output_directory
 
@@ -41,4 +41,5 @@ for i in range(len(varnames)):
     scaling_in = scaling[i]
     ylabel_in = ylabel[i]
     plot_util.stacked_bar(invar, year, varname, output_directory, index_name, fmt=fmt, xkeys=cases, ykeys=ykeys,
-                          scaling=scaling_in, ylabel=ylabel_in, title=title, xlabels=xlabels, fontsize=fontsize)
+                          scaling=scaling_in, ylabel=ylabel_in, title=title, xlabels=xlabels, fontsize=fontsize,
+                          labels_dict=labels_dict)
