@@ -13,6 +13,8 @@ try:
 except OSError:
     pass
 
+#Output all gas demands
+
 fmt = 'png'
 cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG']
 casenames = ['High Electrification', 'No Building Electrification']
@@ -36,13 +38,14 @@ case_index = 'Active_Cases'
 xlabel = 'Year'
 
 pivot = invar.pivot_table(index=[select_index, index_name, time_index], columns=case_index, values=value_name, aggfunc=np.sum)
-var = pivot[cases]
+var = pivot #pivot[cases]
 
 var = var.groupby([index_name, time_index]).sum() #var.loc[select].groupby([index_name, time_index]).sum()
 
 electric_fraction = var.loc['Electricity'] / var.groupby(time_index).sum()
 gas_demand = var.loc['Pipeline Gas']
 
+"""
 i = 0
 for target in [electric_fraction, gas_demand]:
     if reverse[i]:
@@ -61,3 +64,6 @@ for target in [electric_fraction, gas_demand]:
     plt.title(title[i], fontsize=fontsize)
     plt.savefig(os.path.join(output_directory, title[i] + '.' + fmt), format=fmt)
     i += 1
+"""
+
+gas_demand.to_csv(os.path.join(output_directory, 'Pipeline Gas Demand for All Cases (EJ).csv'))
