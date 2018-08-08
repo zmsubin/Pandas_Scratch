@@ -11,10 +11,26 @@ ETHREE_COL = [(3 / 255, 78 / 255, 110 / 255), (175 / 255, 126 / 255, 0),
               (255 / 255, 162 / 255, 57 / 255), (68 / 255, 88 / 255, 210 / 255)
               ]
 
+PRECISION = 1.e-10
+
 
 def nanmap(val, fillval=0):
     if np.isnan(val):
         return fillval
+    else:
+        return val
+
+
+def reverse_nanmap(val, tofill=0.):
+    if val == tofill:
+        return np.nan
+    else:
+        return val
+
+
+def nonzero_map(val):
+    if val == 0.:
+        return PRECISION
     else:
         return val
 
@@ -29,7 +45,8 @@ def othermap(val, keys, other_key='Other'):
 def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', keys=None, labels_dict=None,
                  color_dict=None, scaling=1, yrange=None, ylabel='', case_index='Active_Cases',
                  time_index='Output_Year', value_name='Value', aggfunc=np.sum, map=None, fontsize=12,
-                 xlim=(2015, 2050), xlabel='', select=None, other_key=None): #select is a dictionary of lists
+                 xlim=(2015, 2050), xlabel='', select=None, other_key=None, legend=True, title='',
+                 filename=''): #select is a dictionary of lists
     print('Stacked area chart for variable: ' + varname + ', case: ' + case)
 
     data = data.copy()
@@ -80,7 +97,10 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
     else:
         color = [color_dict[x] for x in pivot.columns.values]
 
-    pivot.plot.area(ax=ax, fontsize=fontsize, color=color)  ## list comprehension using color dict above
+    # Attempt to avoid residual lines in stacked area charts
+    #pivot = pivot.applymap(nonzero_map)
+
+    pivot.plot.area(ax=ax, fontsize=fontsize, color=color, lw=0, legend=legend)  ## list comprehension using color dict above
     # plt.stackplot(gen.index, gen.values.transpose())
 
     if yrange is not None:
@@ -95,13 +115,23 @@ def stacked_area(data, case, varname, output_directory, index_name, fmt='pdf', k
 
     handles, labels = ax.get_legend_handles_labels()  ## get legend labels and boxes as variables
 
-    lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1], fontsize=fontsize)  ## reverse order
+    if legend:
+        lgd = ax.legend(handles=handles[::-1], labels=labels[::-1], bbox_to_anchor=[1, 1], fontsize=fontsize)  ## reverse order
+        artists = (lgd,)
+    else:
+        artists = ()
     ## bbox moves the legend in more precise fashion
 
-    ax.set_title(case, fontsize=fontsize + 2)
+    if title == '':
+        title += case
+    ax.set_title(title, fontsize=fontsize + 2)
 
-    plt.savefig(os.path.join(output_directory, varname + '_' + case + '.' + fmt),
-                dpi=600, transparent=False, bbox_extra_artists=(lgd,),
+    if filename != '':
+        filename += '_'
+    filename += varname + '_' + case + '.' + fmt
+
+    plt.savefig(os.path.join(output_directory, filename),
+                dpi=600, transparent=False, bbox_extra_artists=artists,
                 bbox_inches='tight', format=fmt)
 
     return pivot
@@ -195,7 +225,7 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     ax.set_xlabel(xlabel, fontsize=fontsize)
 
     if xlabels is not None:
-        if max([len(x) for x in xlabels]) > 15 and fontsize is not None:
+        if max([len(x) for x in xlabels]) > 25 and fontsize is not None:
             xlfontsize = fontsize - 3
         else:
             xlfontsize = fontsize

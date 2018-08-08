@@ -6,7 +6,7 @@ import plot_util
 
 input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
 output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Building Energy"
-fontsize = 12
+fontsize = 13
 
 try:
     os.mkdir(output_directory)
@@ -15,12 +15,12 @@ except OSError:
 
 fmt = 'png'
 cases = ['FONG High Electrification', 'FONG Medium Buildings Branching High', 'FONG Medium Building Electrification', 'FONG Medium Buildings Branching Low', 'FONG No Building Electrification with SNG']
-casenames = ['High Electrification', 'Hybrid-High', 'Hybrid', 'Hybrid-Low', 'No Building Electrification']
+casenames = ['High Electrification', 'Delayed Electrification', 'Slower Electrification', 'Mixed with Gas HPs', 'No Building Electrification with High SNG']
 
 varname = 'Final_Energy1'
 
 scaling = [100, 1000 / 1.055]  # EJ to TBTU
-ylabel = ['% of Building Energy', 'TBTU']
+ylabel = ['% of Building Energy', 'Trillion BTU']
 index_name = 'Final_Energy'
 select_index = 'End_Use_Sectors'
 select = ['Residential', 'Commercial']
@@ -53,11 +53,11 @@ for target in [electric_fraction, gas_demand]:
         casenames_loc = casenames
         color_loc = plot_util.ETHREE_COL
     target *= scaling[i]
-    target.plot.line(fontsize=fontsize, color=color_loc)
+    target.plot.line(fontsize=fontsize, color=color_loc, legend=False)
     plt.ylabel(ylabel[i], fontsize=fontsize)
     plt.xlabel(xlabel, fontsize=fontsize)
     plt.ylim(ylim[i])
-    plt.legend(casenames_loc)
+    #plt.legend(casenames_loc)
     plt.title(title[i], fontsize=fontsize)
     plt.savefig(os.path.join(output_directory, title[i] + '.' + fmt), format=fmt)
     i += 1

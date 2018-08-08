@@ -13,10 +13,15 @@ except OSError:
     pass
 
 fmt = 'png'
+'''
 cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
          'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
-xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
-           'No Bldg. Elect.\nwith Industry\n& Truck Measures', 'Current\nPolicy']
+xlabels = ['High\nElectrification', 'No Building\nElectrification\nwith High SNG', 'No Building\nElectrification\nwith Gas HPs',
+           'No Bldg. Elect.\nwith Industry &\nTruck Measures', 'Current\nPolicy']
+'''
+cases = ['FONG Medium Buildings Branching High', 'FONG Medium Building Electrification',  'FONG Medium Buildings Branching Low']
+xlabels = ['Delayed\nElectrification', 'Slower\nElectrification', 'Mixed with\nGas HPs']
+
 ykeys = ['Ag & Other', 'Industrial', 'Buildings: Other', 'Building Electrification', 'Light-Duty Vehicles', 'Other Transportation', 'Fuel Production']
 
 labels_dict = {'Buildings: Space Heating': 'Building Electrification',
@@ -34,12 +39,17 @@ ylabel = ['TWh']
 index_name = 'Electricity_Load_Cat'
 year = 2050
 title = 'Electricity Demand in ' + str(year)
+filename = title + '_Multi-Prong'
 
 for i in range(len(varnames)):
     varname = varnames[i]
     invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
     scaling_in = scaling[i]
     ylabel_in = ylabel[i]
+
+    # Kludge because of doubly-run scenario for this variable:
+    invar.loc[invar['Active_Cases'] == cases[1], 'Value'] /= 2.
+
     plot_util.stacked_bar(invar, year, varname, output_directory, index_name, fmt=fmt, xkeys=cases, ykeys=ykeys,
                           scaling=scaling_in, ylabel=ylabel_in, title=title, xlabels=xlabels, fontsize=fontsize,
-                          labels_dict=labels_dict)
+                          labels_dict=labels_dict, filename=filename)

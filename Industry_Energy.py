@@ -5,7 +5,7 @@ import os
 import plot_util
 
 input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
-output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Building Energy"
+output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Industry Energy"
 
 try:
     os.mkdir(output_directory)
@@ -13,13 +13,13 @@ except OSError:
     pass
 
 fmt = 'png'
-#cases = ['FONG High Electrification', 'FONG No Bldg Elect with Gas HPs', 'FONG No Building Electrification with SNG']
-cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High', 'FONG Medium Buildings Branching Low']
+cases = ['FONG High Electrification', 'FONG Medium Buildings Branching Low', 'FONG No Bldg Elect with Industry & Truck Measures']
+titles = ['High Electrification', 'Mixed with Gas HPs', 'No Building Electrification with Industry & Truck Measures']
 
 varnames = ['Final_Ene_Dem_Ext_O']
 
 other_key = 'Other'
-keys = ['Electricity', 'Biomethane', 'Natural Gas', 'Hydrogen', 'Synthetic Natural Gas', other_key]
+keys = ['Conventional Diesel', 'Renewable Diesel', 'Electricity', 'Biomethane', 'Natural Gas', 'Hydrogen', 'Synthetic Natural Gas', other_key]
 
 labels_dict = {'Electricity': 'Electricity',
                'Hydrogen': 'Hydrogen',
@@ -53,7 +53,7 @@ color_dict = {'Electricity': 'limegreen',
 scaling = [1000 / 1.055]  # EJ to TBTU
 ylabel = ['TBTU']
 index_name = 'Final_Energy_Categor'
-select = {'End_Use_Sectors': ['Residential', 'Commercial']}
+select = {'End_Use_Sectors': ['Industrial']}
 
 time_index = ['Output_Year']
 
@@ -65,12 +65,14 @@ for i in range(len(varnames)):
     time_index_in = time_index[i]
     # yrange_in = yrange[i]
     data = []
+    j = 0
     for case in cases:
         pivot = plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt,
                                        keys=keys,
                                        other_key=other_key,
                                        labels_dict=labels_dict,
                                        color_dict=color_dict,
-                                       scaling=scaling_in, ylabel=ylabel_in,
+                                       scaling=scaling_in, ylabel=ylabel_in, title=titles[j],
                                        time_index=time_index_in, select=select)
         data.append(pivot)
+        j += 1

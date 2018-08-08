@@ -5,7 +5,7 @@ import os
 import plot_util
 
 input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
-output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Net Costs Hybrid Cases"
+output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Net Costs"
 
 try:
     os.mkdir(output_directory)
@@ -17,8 +17,10 @@ fmt = 'png'
 #          'FONG No Bldg Elect with Industry & Truck Measures']
 # xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
 #            'No Bldg. Elect.\nwith Industry\n& Truck Measures']
-cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High', 'FONG Medium Buildings Branching Low']
-xlabels = ['Hybrid', 'Hybrid-High', 'Hybrid-Low']
+cases = ['FONG Medium Buildings Branching High', 'FONG Medium Building Electrification',  'FONG Medium Buildings Branching Low']
+xlabels = ['Delayed\nElectrification', 'Slower\nElectrification', 'Mixed with\nGas HPs']
+
+filename = '2050 Net Costs in Multi-Prong Scenarios'
 
 other_key = 'Ag & Industry'
 keys = ['Residential', 'Commercial', 'Transportation', other_key]
@@ -37,4 +39,5 @@ base_case = 'Current Policy Reference'
 
 invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
 plot_util.stacked_bar(invar, year, varname, output_directory, index_name, fmt=fmt, xkeys=cases, ykeys=keys,
-                      scaling=scaling, ylabel=ylabel, title=title, xlabels=xlabels, base_case=base_case, other_key=other_key, fontsize=fontsize)
+                      scaling=scaling, ylabel=ylabel, title=title, xlabels=xlabels, base_case=base_case, other_key=other_key,
+                      filename=filename, fontsize=fontsize)

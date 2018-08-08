@@ -5,15 +5,16 @@ import os
 import plot_util
 
 input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
-output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python"
-fmt = 'jpg'
+output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Truck Stocks and Sales"
+fmt = 'png'
 cases = ['FONG High Electrification', 'FONG Medium Building Electrification', 'FONG No Bldg Elect with Industry & Truck Measures']
+titles = ['High Electrification', 'No Building Electrification with High SNG', 'No Building Electrification with Industry & Truck Measures']
 
 outputs_path = output_directory
 
 varnames = ['HDV_Collapsed', 'Sales_Share_TRA_HD']
 
-keys = ['Efficient HDV Diesel', 'Hybrid Diesel HDV', 'Efficient HDV CNG', 'HDV Battery Electric', 'HDV Hydrogen FCV']
+keys = ['Diesel ICE', 'Hybrid Diesel', 'CNG ICE', 'BEV', 'Hydrogen FCV']
 
 labels_dict = {
     'Efficient HDV Diesel': 'Diesel ICE',
@@ -24,11 +25,11 @@ labels_dict = {
 }
 
 color_dict = {
-    'Efficient HDV Diesel': 'grey',
-    'Hybrid Diesel HDV': 'darkgrey',
-    'Efficient HDV CNG': 'lightblue',
-    'HDV Battery Electric': 'blue',
-    'HDV Hydrogen FCV': 'darkblue'
+    'Diesel ICE': 'silver',
+    'Hybrid Diesel': 'darkgrey',
+    'CNG ICE': 'skyblue',
+    'BEV': 'limegreen',
+    'Hydrogen FCV': 'gold'
 }
 
 scaling = [1e-3, 100]  # 0.001
@@ -45,8 +46,10 @@ for i in range(len(varnames)):
     ylabel_in = ylabel[i]
     time_index_in = time_index[i]
     yrange_in = yrange[i]
+    j = 0
     for case in cases:
         plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt, keys=keys,
-                               labels_dict=labels_dict,
+                               labels_dict=labels_dict, title=titles[j],
                                color_dict=color_dict, scaling=scaling_in, yrange=yrange_in, ylabel=ylabel_in,
                                time_index=time_index_in)
+        j += 1

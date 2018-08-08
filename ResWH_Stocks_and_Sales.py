@@ -45,6 +45,7 @@ time_index = ['Year', 'Vintage']
 #Pull All Cases
 invar = pd.read_csv(os.path.join(input_directory, varnames[0] + '.csv'), na_values='NAN')
 cases = invar['Active_Cases'].unique()
+filename = 'suppress_legend'
 
 
 for i in range(len(varnames)):
@@ -61,4 +62,4 @@ for i in range(len(varnames)):
         plot_util.stacked_area(invar, case, varname, output_directory, index_name=index_name, fmt=fmt,
                                keys=keys,
                                color_dict=color_dict, scaling=scaling_in, yrange=yrange_in, ylabel=ylabel_in,
-                               time_index=time_index_in, fontsize=fontsize)
+                               time_index=time_index_in, fontsize=fontsize, filename=filename, legend=False)

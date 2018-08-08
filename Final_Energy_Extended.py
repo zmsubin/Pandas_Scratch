@@ -13,13 +13,17 @@ except OSError:
     pass
 
 fmt = 'png'
-# cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
-#          'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
-# xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
-#            'No Bldg. Elect.\nwith Industry\n& Truck Measures', 'Current\nPolicy']
+'''
+cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
+         'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
+xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
+           'No Bldg. Elect.\nwith Industry &\nTruck Measures', 'Current\nPolicy']
+'''
 cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High',
          'FONG Medium Buildings Branching Low']
-xlabels = ['Hybrid', 'Hybrid-High', 'Hybrid-Low']
+xlabels = ['Delayed\nElectrification', 'Slower\nElectrification', 'Mixed with\nGas HPs']
+
+filename = 'Final_Energy_Consumption_Multiprong_Cases' #'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Multiprong_Cases'
 
 other_key = 'Other'
 
@@ -52,7 +56,7 @@ labels_dict = {'Electricity': 'Electricity',
                'Power to Gas': 'Synthetic Natural Gas'
                }
 
-color_dict = {'Electricity': 'skyblue',
+color_dict = {'Electricity': 'limegreen',
               'Hydrogen': 'gold',
               'Conventional Gasoline & Ethanol': 'maroon',
               'Renewable Gasoline': 'salmon',
@@ -60,8 +64,8 @@ color_dict = {'Electricity': 'skyblue',
               'Renewable Diesel': 'sandybrown',
               'Conventional Jet Fuel': 'purple',
               'Renewable Jet Fuel': 'violet',
-              'Natural Gas': 'darkgreen',
-              'Biomethane': 'limegreen',
+              'Natural Gas': 'navy',
+              'Biomethane': 'skyblue',
               'Synthetic Natural Gas': 'olive',
               other_key: 'black'
               }
@@ -87,7 +91,6 @@ index_name = 'Final_Energy_Categor'
 year = 2050
 title = 'Final Energy Consumption in ' + str(year)
 base_case = None  # 'Current Policy Reference'
-filename = 'Final_Energy_Consumption_Hybrid_Cases' # 'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Hybrid_Cases'
 
 invar = pd.read_csv(os.path.join(input_directory, varname + '.csv'), na_values='NAN')
 plot_util.stacked_bar(invar, year, varname, output_directory, index_name, fmt=fmt, xkeys=cases, ykeys=keys,
