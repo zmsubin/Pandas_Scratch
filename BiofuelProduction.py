@@ -14,9 +14,9 @@ except OSError:
 
 fmt = 'png'
 
-cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG',
+cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
          'FONG No Bldg Elect with Industry & Truck Measures']
-xlabels = ['High\nElectrification', 'No Building\nElectrification\nwith SNG',
+xlabels = ['High\nElectrification', 'No Building\nElectrification\nwith High SNG', 'No Building\nElectrification\nwith Gas HPs',
            'No Bldg. Elect.\nwith Industry\n& Truck Measures']
 '''
 cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High',
@@ -24,7 +24,7 @@ cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branchin
 xlabels = ['Delayed\nElectrification', 'Slower\nElectrification', 'Mixed with\nGas HPs']
 '''
 ykeys = ['Biomethane', 'Renewable Diesel', 'Renewable Gasoline and Ethanol', 'Renewable Jet Fuel']
-filename = 'Biofuel_Production_Booekends' # 'Biofuel_Production_Multiprong'
+filename = 'Biofuel_Production_Bookends' # 'Biofuel_Production_Multiprong'
 
 labels_dict = {
     'Jet Fuel (Kerosene)': 'Renewable Jet Fuel', 'Gasoline': 'Renewable Gasoline and Ethanol',

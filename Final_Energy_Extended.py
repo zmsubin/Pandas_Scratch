@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import plot_util
 
-input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180731_1440"
+input_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Case Outputs\comb_outputs_20180806_1319"
 output_directory = r"S:\E3 Projects\CEC Future of Nat Gas\PATHWAYS Model\Output Tools and Charts\python\Final Energy Extended"
 
 try:
@@ -13,7 +13,7 @@ except OSError:
     pass
 
 fmt = 'png'
-'''
+
 cases = ['FONG High Electrification', 'FONG No Building Electrification with SNG', 'FONG No Bldg Elect with Gas HPs',
          'FONG No Bldg Elect with Industry & Truck Measures', 'Current Policy Reference']
 xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building\nElectrification\nwith Gas HPs',
@@ -22,8 +22,8 @@ xlabels = ['High\nElectrification', 'No Building\nElectrification', 'No Building
 cases = ['FONG Medium Building Electrification', 'FONG Medium Buildings Branching High',
          'FONG Medium Buildings Branching Low']
 xlabels = ['Delayed\nElectrification', 'Slower\nElectrification', 'Mixed with\nGas HPs']
-
-filename = 'Final_Energy_Consumption_Multiprong_Cases' #'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Multiprong_Cases'
+'''
+filename = 'Final_Energy_Consumption_Bookend_Cases' #'Final_Energy_Consumption_Multiprong_Cases'
 
 other_key = 'Other'
 
