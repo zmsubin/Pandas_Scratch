@@ -8,9 +8,10 @@ import sys
 
 sys.path.append(os.path.join(os.getcwd(), '..'))
 import plot_util
+
 fontsize = 12
 
-fmt = 'jpg'
+fmt = 'png'
 
 kwh_to_mmbtu = 3.6 / 1000 / 1.055
 kbtu_to_mmbtu = 1.e-3
@@ -21,14 +22,12 @@ kbtu_to_mmbtu = 1.e-3
 index_names = ['Climate Zone', 'Home Type', 'Vintage', 'Home Fuel']
 ylim = [0, 100]
 
-data = pd.DataFrame(index=pd.MultiIndex.from_product([cz_str, hy_str, vt_str, [fuel_dict[x] for x in fuel_str]], names=index_names), columns=fuel_types)
-
 input_directory = r'S:\E3 Projects\SCE Building Electrification\Building Simulations\building_simulation_inputs_8-14-18'
 output_directory = r'S:\E3 Projects\SCE Building Electrification\Building Simulations\Result Figures\Total Energy'
 
 cz_str = ['CZ03', 'CZ04', 'CZ06', 'CZ09', 'CZ10', 'CZ12']
 hy_str = ['SFH', ]
-# vt_str = ['1400','2100','2700']
+
 vt_str = ['1400', '2100', '2700']
 fuel_str = ['Mixed', 'All-Electric']
 fuel_dict = {'Mixed': '1gas',
@@ -80,6 +79,10 @@ ann_ele_sav_df = pd.DataFrame()
 ann_gas_sav_df = pd.DataFrame()
 '''
 
+data = pd.DataFrame(
+    index=pd.MultiIndex.from_product([cz_str, hy_str, vt_str, [fuel_dict[x] for x in fuel_str]], names=index_names),
+    columns=fuel_types)
+
 for idx in data.index.tolist():
     print(idx)
     vt = idx[2]
@@ -93,69 +96,33 @@ for idx in data.index.tolist():
     df = pd.read_csv(inputfile, index_col=0)
 
     for fl in fuel_types:
-        if (fl == 'All-Electric' and fuel == fuel_dict['Mixed']) or (fl == 'Electric (Mixed)' and fuel == fuel_dict['All-Electric']):
+        if (fl == 'All-Electric' and fuel == fuel_dict['Mixed']) or (
+                fl == 'Electric (Mixed)' and fuel == fuel_dict['All-Electric']):
             data.loc[idx, fl] = 0.
         else:
             data.loc[idx, fl] = df[fuel_lookup[fl]].sum() * scaling[fl]
 
 group_size = 2
+num_series = len(vt_str) * len(fuel_str)
 # Plot!
 for cz, hy in itertools.product(cz_str, hy_str):
     df = data.loc[cz, hy]
-    ax = df.plot.bar(stacked=True, rot=0, color=[plot_util.ETHREE_COL[x] for x in [1, 0, 1]]) #, hatch=['\\', ' ', ' '])
+    ax = df.plot.bar(stacked=True, rot=0, color=[plot_util.ETHREE_COL[x] for x in [1, 0, 1]], fontsize=fontsize)
     ax.set_xticks(range(0, len(df.index), 2))
-    ax.set_xticklabels([vt_dict[x] for x in df.index.levels[0].tolist()])
+    ax.set_xticklabels([vt_dict[x] for x in df.index.levels[0].tolist()], fontsize=fontsize)
     ax.set_xlabel('')
-    ax.set_title(cz + ' ' + hy)
+    ax.set_title(cz + ' ' + hy, fontsize=fontsize + 3)
     # set yaxis label
     ax.set_ylabel('Total Annual Energy (MMBtu)', fontsize=fontsize)
     ax.set_ylim(ylim)
 
-    for i in np.arange(-0.5, -0.5 + group_size * 10, group_size):
-        if (i + 0.5) / group_size % 2 == 0:
-            ax.fill_betweenx(np.arange(ax.get_ylim()[0], ax.get_ylim()[1]), i, i + group_size, zorder=0, facecolor='gainsboro', alpha=1)
-        else:
-            pass
+    ax = plot_util.shade(ax, group_size, num_series)
 
     bars = ax.patches
-    patterns = [' ',] * 12 + ['///',]*6
+    patterns = [' ', ] * 2 * num_series + ['///', ] * num_series
     for bar, pattern in zip(bars, patterns):
         bar.set_hatch(pattern)
 
-    plt.legend()
+    plt.legend(fontsize=fontsize)
 
     plt.savefig(os.path.join(output_directory, cz + ' ' + hy + '.' + fmt), format=fmt)
-
-
-
-#ax.set_title(cz + ' Single Family Home (' + util_trans[util] + ')', fontsize=25, y=1.02)
-
-#ax.set_ylim([-7, 40])
-
-# set ticks
-'''
-ax.tick_params(
-    axis='x',  # changes apply to the x-axis
-    which='both',  # both major and minor ticks are affected
-    bottom=True,  # ticks along the bottom edge are on
-    top=False,  # ticks along the top edge are off
-    labelbottom=True,  # labels along the bottom edge are on
-    length=0, )
-
-ax.xaxis.grid(False)
-for tick in ax.xaxis.get_major_ticks():
-    tick.label.set_fontsize(18)
-
-for tick in ax.yaxis.get_major_ticks():
-    tick.label.set_fontsize(22)
-
-'''
-
-
-
-'''
-# set legend
-lgnd = ax.legend(loc='upper left', fontsize=16, )
-lgnd.set_title('Electrification Scenarios', prop={'size': 20, 'weight': 'medium'})
-'''
-# plt.savefig(os.path.join('figures','ps_folder','energy_sav_sfh_'+cz.lower()+'_'+vt_dict[vt]+'_'+util_trans[util].lower()+'.pdf'),format='pdf')

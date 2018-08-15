@@ -247,3 +247,13 @@ def stacked_bar(data, select, varname, output_directory, index_name, fmt='pdf', 
     plt.savefig(os.path.join(output_directory, filename),
                 dpi=600, transparent=False, bbox_extra_artists=(lgd,),
                 bbox_inches='tight', format=fmt)
+
+
+def shade(ax, group_size, num_bars):
+    for i in np.arange(-0.5, -0.5 + num_bars, group_size):
+        if (i + 0.5) / group_size % 2 == 0:
+            ax.fill_betweenx(np.arange(ax.get_ylim()[0], ax.get_ylim()[1]), i, i + group_size, zorder=0,
+                             facecolor='gainsboro', alpha=1)
+        else:
+            pass
+    return ax
